@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROYO STAYHUB - Varanasi Prayagraj LIVE</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<style>.hide{display:none}.active-d{background:#c1272d!important;color:#fff!important}.active-c{background:#fee2e2!important;border-color:#c1272d!important}</style>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, collection, addDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDpR-ydEQWVCylOpJtOEbxrR9WnkuGErsk",
+  authDomain: "royo-stayhub.firebaseapp.com",
+  projectId: "royo-stayhub",
+  storageBucket: "royo-stayhub.firebasestorage.app",
+  messagingSenderId: "1028107929716",
+  appId: "1:1028107929716:web:63286045ad3911f60de921"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+window.db=db; window.fb={collection, addDoc, query, where, onSnapshot, serverTimestamp};
+window.firebaseReady=true;
+</script>
+</head>
+<body class="bg-gray-50">
+
+<header class="bg-[#c1272d] text-white p-3 sticky top-0 z-50 flex justify-between items-center shadow">
+  <h1 class="font-black text-xl">ROYO STAYHUB <span class="text-[10px] bg-white text-[#c1272d] px-2 py-0.5 rounded-full ml-1">🔴 LIVE</span></h1>
+  <div class="flex gap-2 items-center">
+    <button onclick="showPage('home')" class="text-sm"><i class="fa fa-home"></i></button>
+    <button onclick="showPage('owner')" class="bg-white text-[#c1272d] px-4 py-1.5 rounded-full text-xs font-black">+ POST</button>
+    <button onclick="showPage('auth')" class="w-8 h-8 bg-white/20 rounded-full"><i class="fa fa-user"></i></button>
+  </div>
+</header>
+
+<!-- AUTH -->
+<div id="page-auth" class="min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white w-full max-w-md rounded-[28px] shadow-2xl p-7">
+    <div class="text-center"><div class="w-16 h-16 bg-[#c1272d] rounded-2xl mx-auto flex items-center justify-center text-white text-2xl"><i class="fa fa-house"></i></div>
+    <h1 class="mt-3 font-black text-2xl text-[#c1272d]">ROYO STAYHUB</h1><p class="text-xs text-gray-500 mt-1">🔴 Firebase Live - Varanasi • Prayagraj</p></div>
+    <div class="flex mt-6 rounded-xl overflow-hidden border text-sm"><button id="bM" onclick="setAuth('m')" class="flex-1 p-3 bg-[#c1272d] text-white font-bold"><i class="fa fa-phone"></i> Mobile OTP</button><button id="bE" onclick="setAuth('e')" class="flex-1 p-3"><i class="fa fa-envelope"></i> Email</button></div>
+    <div id="aM"><input id="ph" placeholder="+91 98765 43210" class="mt-5 w-full p-3.5 border rounded-xl"/><button onclick="sendOTP()" id="sBtn" class="w-full mt-3 bg-[#c1272d] text-white p-3.5 rounded-xl font-bold">Send OTP</button><div id="oSec" class="hide"><p class="text-xs mt-3 text-center">Demo OTP: <b>479216</b></p><button onclick="verify()" class="w-full mt-4 bg-[#c1272d] text-white p-3.5 rounded-xl font-bold">Verify & Continue</button></div></div>
+    <div id="aE" class="hide"><input id="em" placeholder="you@gmail.com" class="mt-5 w-full p-3.5 border rounded-xl"/><button onclick="loginE()" class="w-full mt-3 border-2 border-[#c1272d] text-[#c1272d] p-3.5 rounded-xl font-bold">Continue with Email</button></div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div id="page-home" class="hide p-4 max-w-6xl mx-auto">
+  <div class="bg-white p-3 rounded-2xl shadow flex gap-2"><i class="fa fa-search self-center text-gray-400 ml-2"></i><input id="sr" oninput="live()" placeholder="Search Lanka, Sigra, Civil Lines..." class="flex-1 p-2 outline-none"/><span class="bg-red-50 text-[#c1272d] px-3 py-1 rounded-full text-xs self-center">🔴 Live</span></div>
+  <h2 class="mt-6 font-bold flex justify-between">UP Districts <span class="text-xs text-[#c1272d]">Live from Firebase</span></h2><div id="dList" class="flex gap-2 overflow-x-auto mt-2 pb-2"></div>
+  <h2 class="mt-6 font-bold">Categories</h2><div class="grid grid-cols-4 gap-3 mt-2">
+    <button onclick="setCat('All')" id="cAll" class="active-c bg-white border-2 p-3 rounded-2xl text-center"><div class="text-xl">🏠</div><div class="text-[11px] font-bold mt-1">All</div></button>
+    <button onclick="setCat('Room')" id="cRoom" class="bg-white border-2 p-3 rounded-2xl text-center"><div class="text-xl">🛏️</div><div class="text-[11px]">Room</div></button>
+    <button onclick="setCat('PG')" id="cPG" class="bg-white border-2 p-3 rounded-2xl text-center"><div class="text-xl">🏢</div><div class="text-[11px]">PG</div></button>
+    <button onclick="setCat('Hostel')" id="cHostel" class="bg-white border-2 p-3 rounded-2xl text-center"><div class="text-xl">🛌</div><div class="text-[11px]">Hostel</div></button>
+  </div><div class="mt-3 flex gap-2"><button onclick="setCat('Flat')" id="cFlat" class="bg-white border-2 px-6 py-3 rounded-2xl text-sm">🏘️ Flat</button><span class="self-center text-xs text-gray-400" id="statusText">🔴 Connected to Firebase</span></div>
+  <div class="flex justify-between items-center mt-8"><h2 id="tCity" class="font-bold text-lg">Top Stays in Varanasi</h2><span id="cProp" class="text-xs bg-[#c1272d] text-white px-3 py-1 rounded-full"></span></div>
+  <div id="pList" class="grid md:grid-cols-2 gap-4 mt-3"></div>
+</div>
+
+<!-- OWNER -->
+<div id="page-owner" class="hide">
+  <div class="bg-[#c1272d] text-white p-4"><h1 class="font-bold">Owner Panel - 🔴 LIVE POST</h1><p class="text-xs">Post karte hi Firebase me save + sabko Live dikhega</p></div>
+  <div class="p-4 max-w-2xl mx-auto bg-white mt-4 rounded-[20px] shadow p-6">
+    <label class="font-bold text-sm">Property Type *</label><div class="flex gap-2 mt-2 flex-wrap"><button onclick="setPT('Room')" class="pt bg-[#c1272d] text-white px-5 py-2 rounded-xl text-sm font-bold">Room</button><button onclick="setPT('PG')" class="pt bg-white border px-5 py-2 rounded-xl text-sm">PG</button><button onclick="setPT('Hostel')" class="pt bg-white border px-5 py-2 rounded-xl text-sm">Hostel</button><button onclick="setPT('Flat')" class="pt bg-white border px-5 py-2 rounded-xl text-sm">Flat</button></div>
+    <select id="oD" class="mt-4 w-full p-3.5 border rounded-xl"><option>Varanasi</option><option>Prayagraj</option><option>Lucknow</option><option>Kanpur</option><option>Gorakhpur</option><option>Ayodhya</option><option>Jaunpur</option></select>
+    <input id="oC" placeholder="City" value="Varanasi" class="mt-3 w-full p-3.5 border rounded-xl"/><input id="oA" placeholder="Area - Lanka, Sigra, Civil Lines" class="mt-3 w-full p-3.5 border rounded-xl"/><input id="oR" type="number" placeholder="Rent ₹ per month" class="mt-3 w-full p-3.5 border rounded-xl"/><input id="oP" placeholder="Contact Number +91..." class="mt-3 w-full p-3.5 border rounded-xl"/><input id="oT" placeholder="Property Name - e.g. Green Palace" class="mt-3 w-full p-3.5 border rounded-xl"/>
+    <button onclick="post()" id="postBtn" class="w-full mt-6 bg-[#c1272d] text-white p-4 rounded-xl font-black text-lg shadow-lg">POST TO FIREBASE LIVE 🔴</button>
+  </div>
+</div>
+
+<script>
+let districts=["Varanasi","Prayagraj","Lucknow","Kanpur","Gorakhpur","Ayodhya","Jaunpur"];
+let curD="Varanasi", curC="All", pT="Room";
+let localProps=JSON.parse(localStorage.getItem("royo_props")||"[]");
+let user=JSON.parse(localStorage.getItem("royo_user")||"null");
+
+function showPage(p){['auth','home','owner'].forEach(x=>document.getElementById('page-'+x).classList.add('hide')); document.getElementById('page-'+p).classList.remove('hide'); if(p==='home') live(); if(p==='owner'&&!user){alert('Pehle login karo!'); showPage('auth');}}
+function setAuth(m){document.getElementById('aM').classList.toggle('hide',m!=='m'); document.getElementById('aE').classList.toggle('hide',m!=='e'); bM.className=m==='m'?'flex-1 p-3 bg-[#c1272d] text-white font-bold':'flex-1 p-3'; bE.className=m==='e'?'flex-1 p-3 bg-[#c1272d] text-white font-bold':'flex-1 p-3';}
+function sendOTP(){if(!ph.value){alert('Mobile dalo'); return;} oSec.classList.remove('hide'); sBtn.innerText='OTP Sent ✓ 479216';}
+function verify(){localStorage.setItem('royo_user',JSON.stringify({phone:ph.value})); user={phone:ph.value}; showPage('home');}
+function loginE(){localStorage.setItem('royo_user',JSON.stringify({email:em.value})); user={email:em.value}; showPage('home');}
+function setPT(t){pT=t; document.querySelectorAll('.pt').forEach(b=>b.className=b.innerText===t?'pt bg-[#c1272d] text-white px-5 py-2 rounded-xl text-sm font-bold':'pt bg-white border px-5 py-2 rounded-xl text-sm');}
+function setCat(c){curC=c; document.querySelectorAll('[id^=c]').forEach(b=>b.classList.remove('active-c')); document.getElementById('c'+c).classList.add('active-c'); live();}
+function setDistrict(d){curD=d; live();}
+function renderDistricts(){let h=''; districts.forEach(d=>{h+=`<button onclick="setDistrict('${d}')" class="px-4 py-2 rounded-xl border bg-white text-sm ${d===curD?'active-d':''}">${d}</button>`}); dList.innerHTML=h;}
+
+window.live = ()=>{
+  renderDistricts();
+  try{
+    let q = fb.query(fb.collection(db,"properties"), fb.where("district","==",curD));
+    fb.onSnapshot(q, snap=>{
+      let fbProps=[]; snap.forEach(doc=>fbProps.push(doc.data()));
+      let s=sr?.value.toLowerCase()||'';
+      let all = [...fbProps,...localProps.filter(p=>p.district===curD)];
+      let f = all.filter(p=> (curC==='All'||p.type===curC) && ((p.title||'').toLowerCase().includes(s)||(p.area||'').toLowerCase().includes(s)) );
+      tCity.innerText=`Top Stays in ${curD} 🔴 LIVE`; cProp.innerText=`${f.length} Live`;
+      pList.innerHTML = f.length? f.map(p=>`<div class="bg-white rounded-2xl shadow p-3 flex gap-3 border-l-4 border-[#c1272d]"><div class="w-20 h-20 bg-red-50 rounded-xl flex items-center justify-center text-2xl">${p.type==='PG'?'🏢':p.type==='Hostel'?'🛌':p.type==='Flat'?'🏠':'🛏️'}</div><div class="flex-1"><h3 class="font-bold text-sm">${p.title} • LIVE</h3><p class="text-[11px] text-gray-500">📍 ${p.area}, ${p.district}</p><p class="text-[#c1272d] font-bold">₹${p.rent}/month • ${p.type}</p></div><a href="tel:${p.phone}" class="self-center bg-[#c1272d] text-white px-4 py-2 rounded-xl text-xs">Call</a></div>`).join('') : `<div class="col-span-2 text-center p-10 bg-white rounded-2xl">No property in ${curD} - Be first to post!<br><button onclick="showPage('owner')" class="mt-3 bg-[#c1272d] text-white px-6 py-2 rounded-xl">+ Post Property</button></div>`;
+    }, err=>{ statusText.innerText="Firestore Rule check karo"; });
+  }catch(e){ console.log(e); }
+}
+
+window.post = async ()=>{
+  let data={title:oT.value||"New Stay", district:oD.value, city:oC.value, area:oA.value, rent:parseInt(oR.value)||5000, phone:oP.value, type:pT, createdAt: fb.serverTimestamp()};
+  if(!data.area||!data.phone||!data.rent){alert("Area, Rent, Phone bharo"); return;}
+  postBtn.innerText="Posting to Firebase...";
+  try{
+    await fb.addDoc(fb.collection(db,"properties"), data);
+    localProps.unshift(data); localStorage.setItem("royo_props", JSON.stringify(localProps));
+    alert("🔴 LIVE ho gaya! "+data.district+" me sabko dikhega");
+    showPage('home'); curD=data.district; live();
+  }catch(err){
+    alert("Error: "+err.message+"\nFirestore Rules me 'allow read, write: if true' kar de");
+  }
+  postBtn.innerText="POST TO FIREBASE LIVE 🔴";
+}
+
+if(user) showPage('home'); else showPage('auth');
+renderDistricts(); setTimeout(()=>{try{live()}catch(e){}}, 800);
+</script>
+</body>
+</html>
