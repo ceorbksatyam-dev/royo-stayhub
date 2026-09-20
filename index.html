@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROYO STAYHUB - UP Stays</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+body{font-family:'Outfit',sans-serif;background:#FFF7ED; overflow-x:hidden;}
+#stayGrid{ display:grid!important; width:100%!important; grid-template-columns: 1fr!important; gap:16px!important; }
+@media(min-width:640px){ #stayGrid{ grid-template-columns: repeat(2, 1fr)!important; } }
+@media(min-width:1024px){ #stayGrid{ grid-template-columns: repeat(3, 1fr)!important; } }
+.stay-card{ width:100%!important; max-width:100%!important; margin:0!important; }
+</style>
+</head>
+<body class="bg-[#FFF7ED]">
+<div class="min-h-screen">
+<header class="bg-white sticky top-0 z-50 border-b px-4 py-3 flex justify-between items-center">
+<div class="flex items-center gap-2"><div class="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white font-black">R</div><span class="font-black">ROYO <span class="text-orange-600">STAYHUB</span></span></div>
+<div class="flex gap-1"><button onclick="show('home')" class="px-2 py-1.5 bg-orange-600 text-white rounded-full text-[11px] font-bold">HOME</button><button onclick="show('owner')" class="px-2 py-1.5 border rounded-full text-[11px] font-bold">POST</button><button onclick="show('admin')" class="px-2 py-1.5 border rounded-full text-[11px] font-bold bg-black text-white">ADMIN</button><button onclick="show('auth')" class="px-2 py-1.5 border rounded-full text-[11px] font-bold"><i class="fa-solid fa-user"></i></button></div>
+</header>
+
+<section id="auth" class="p-4 max-w-md mx-auto"><div class="bg-white rounded-[24px] p-6 shadow mt-6">
+<h1 class="text-3xl font-black text-center">Welcome to<br><span class="text-orange-600">ROYO STAYHUB</span></h1>
+<div id="authForm">
+<input id="uName" class="w-full mt-4 border-2 rounded-xl px-4 py-3 text-sm" placeholder="Full Name">
+<input id="uMobile" class="w-full mt-3 border-2 rounded-xl px-4 py-3 text-sm" placeholder="+91 Mobile Number">
+<input id="uEmail" class="w-full mt-3 border-2 rounded-xl px-4 py-3 text-sm" placeholder="Email Address">
+<button onclick="doSignup()" class="w-full bg-orange-600 text-white py-3 rounded-full font-black mt-4">Signup / Login & Continue 🚀</button>
+</div>
+<div id="userInfo" class="hidden text-center"><h2 class="font-black text-lg">Hi, <span id="displayName"></span> 👋</h2><p class="text-xs text-gray-500" id="displayEmail"></p><button onclick="show('home')" class="w-full mt-4 bg-black text-white py-2.5 rounded-full text-sm font-bold">Go to Home</button><button onclick="logout()" class="mt-3 text-xs border px-4 py-1.5 rounded-full">Logout</button></div>
+</div></section>
+
+<section id="home" class="p-4 w-full max-w-7xl mx-auto">
+<div class="bg-gradient-to-r from-orange-600 to-red-500 rounded-[24px] p-6 text-white w-full"><h2 class="text-2xl font-black">UP me Room dhoondo<br>District wise 🔍</h2><input id="searchInput" oninput="applyFilter()" class="w-full mt-4 rounded-full px-4 py-2 text-black text-sm outline-none" placeholder="Search Varanasi, Prayagraj..."></div>
+<div class="flex gap-2 mt-4 overflow-x-auto pb-1">
+<button data-dist="all" onclick="setDist(this)" class="dist-btn px-4 py-2 bg-black text-white rounded-full text-xs font-bold">All UP</button>
+<button data-dist="varanasi" onclick="setDist(this)" class="dist-btn px-4 py-2 bg-white border rounded-full text-xs font-bold">Varanasi</button>
+<button data-dist="prayagraj" onclick="setDist(this)" class="dist-btn px-4 py-2 bg-white border rounded-full text-xs font-bold">Prayagraj</button>
+<button data-dist="lucknow" onclick="setDist(this)" class="dist-btn px-4 py-2 bg-white border rounded-full text-xs font-bold">Lucknow</button>
+<button data-dist="kanpur" onclick="setDist(this)" class="dist-btn px-4 py-2 bg-white border rounded-full text-xs font-bold">Kanpur</button>
+</div>
+<div class="flex gap-2 mt-3 overflow-x-auto pb-2">
+<button data-cat="all" onclick="setCat(this)" class="cat-btn px-4 py-1.5 bg-orange-600 text-white rounded-full text-xs font-bold">🏠 All</button>
+<button data-cat="room" onclick="setCat(this)" class="cat-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">Room</button>
+<button data-cat="pg" onclick="setCat(this)" class="cat-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">PG</button>
+<button data-cat="hostel" onclick="setCat(this)" class="cat-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">Hostel</button>
+<button data-cat="flat" onclick="setCat(this)" class="cat-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">Flat</button>
+</div>
+<div class="flex gap-2 mt-3 overflow-x-auto pb-1">
+<button data-for="all" onclick="setFor(this)" class="for-btn px-4 py-1.5 bg-black text-white rounded-full text-xs font-bold">👨‍👩‍👧 All</button>
+<button data-for="boy" onclick="setFor(this)" class="for-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">👦 Boy</button>
+<button data-for="girl" onclick="setFor(this)" class="for-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">👧 Girl</button>
+<button data-for="family" onclick="setFor(this)" class="for-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">👨‍👩‍👧‍👦 Family</button>
+<button data-for="other" onclick="setFor(this)" class="for-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold">👤 Other</button>
+</div>
+<h3 class="font-black mt-6 mb-3">🔥 <span id="resultCount">0</span> Live Stays</h3>
+<div class="w-full" id="stayGrid"></div>
+</section>
+
+<section id="owner" class="hidden p-4 max-w-xl mx-auto">
+<div class="bg-white rounded-[24px] p-6 shadow mt-4">
+<h2 class="text-xl font-black">Post Property 🚀 (4 Photos)</h2>
+<div class="grid grid-cols-2 gap-3 mt-4">
+<select id="pType" class="border-2 rounded-xl px-3 py-3 text-sm"><option value="room">Room</option><option value="pg">PG</option><option value="hostel">Hostel</option><option value="flat">Flat</option></select>
+<select id="pDist" class="border-2 rounded-xl px-3 py-3 text-sm"><option value="varanasi">Varanasi</option><option value="prayagraj">Prayagraj</option><option value="lucknow">Lucknow</option><option value="kanpur">Kanpur</option></select>
+<select id="pFor" class="col-span-2 border-2 rounded-xl px-3 py-3 text-sm bg-orange-50 font-bold"><option value="boy">👦 Boy</option><option value="girl">👧 Girl</option><option value="family">👨‍👩‍👧‍👦 Family</option><option value="other">👤 Other</option></select>
+<input id="pCity" class="border-2 rounded-xl px-3 py-3 text-sm" placeholder="City">
+<input id="pArea" class="border-2 rounded-xl px-3 py-3 text-sm" placeholder="Area">
+<input id="pRent" class="border-2 rounded-xl px-3 py-3 text-sm" placeholder="Rent Monthly">
+<input id="pPhone" class="border-2 rounded-xl px-3 py-3 text-sm" placeholder="Phone">
+<input id="pTitle" class="col-span-2 border-2 rounded-xl px-3 py-3 text-sm" placeholder="Title">
+<input id="pLocation" class="col-span-2 border-2 rounded-xl px-3 py-3 text-sm" placeholder="Location">
+<input id="pImage" class="col-span-2 border-2 rounded-xl px-3 py-3 text-sm" type="file" accept="image/*" multiple>
+<div id="imgPreview" class="col-span-2 hidden grid grid-cols-2 gap-2"></div>
+</div>
+<div class="mt-4"><p class="text-xs font-black mb-2">Features:</p><div class="grid grid-cols-3 gap-2 text-[11px]">
+<label class="border rounded-full px-3 py-1.5"><input type="checkbox" value="WiFi" class="feat"> WiFi</label>
+<label class="border rounded-full px-3 py-1.5"><input type="checkbox" value="AC" class="feat"> AC</label>
+<label class="border rounded-full px-3 py-1.5"><input type="checkbox" value="Food" class="feat"> Food</label>
+<label class="border rounded-full px-3 py-1.5"><input type="checkbox" value="Parking" class="feat"> Parking</label>
+<label class="border rounded-full px-3 py-1.5"><input type="checkbox" value="Water" class="feat"> Water</label>
+<label class="border rounded-full px-3 py-1.5"><input type="checkbox" value="Furnished" class="feat"> Furnished</label>
+</div></div>
+<button onclick="postProperty()" id="postBtn" class="w-full bg-orange-600 text-white py-3 rounded-full font-black mt-6">🚀 Post Now</button>
+<p id="postStatus" class="text-xs text-center mt-2 font-bold"></p>
+</div>
+</section>
+
+<section id="admin" class="hidden p-4 max-w-6xl mx-auto">
+<div class="bg-white rounded-[24px] p-6 shadow mt-4 max-w-md mx-auto" id="adminLoginBox">
+<h2 class="text-xl font-black text-center">Admin Login 🔐 Team Only</h2>
+<input id="adminEmail" class="w-full mt-4 border-2 rounded-xl px-4 py-3 text-sm" placeholder="Admin Email">
+<input id="adminPass" type="password" class="w-full mt-3 border-2 rounded-xl px-4 py-3 text-sm" placeholder="Admin Password">
+<button onclick="checkAdmin()" class="w-full bg-black text-white py-3 rounded-full font-black mt-3">Secure Login</button>
+<p id="adminError" class="text-[11px] text-red-600 text-center mt-2 hidden"></p>
+</div>
+<div id="adminPanel" class="hidden"><div class="flex justify-between items-center"><h2 class="text-xl font-black">Admin Panel 🛠️ <span id="adminEmailShow" class="text-[10px] text-gray-500"></span></h2><button onclick="logoutAdmin()" class="text-xs border px-3 py-1.5 rounded-full">Logout</button></div><div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6" id="adminGrid"></div></div>
+</section>
+</div>
+
+<div id="bookModal" class="hidden fixed inset-0 bg-black/50 z-[100] flex items-end md:items-center justify-center p-4">
+<div class="bg-white w-full max-w-md rounded-[24px] p-6">
+<h3 class="font-black text-lg">Book This Stay? 🏠</h3><p class="text-xs text-gray-500 mt-1" id="bookTitle"></p>
+<input id="bookName" class="w-full mt-3 border-2 rounded-xl px-3 py-2 text-sm" placeholder="Your Name">
+<input id="bookPhone" class="w-full mt-2 border-2 rounded-xl px-3 py-2 text-sm" placeholder="Your Phone">
+<div class="flex gap-2 mt-4"><button onclick="closeBook()" class="flex-1 border rounded-full py-2.5 text-sm font-bold">Cancel</button><button onclick="confirmBooking()" class="flex-1 bg-black text-white rounded-full py-2.5 text-sm font-bold">Confirm</button></div>
+</div>
+</div>
+
+<div id="galleryModal" class="hidden fixed inset-0 bg-black/95 z-[200] flex flex-col items-center justify-center p-3">
+  <button onclick="closeGallery()" class="absolute top-4 right-4 text-white text-xl w-10 h-10 bg-white/20 rounded-full">✕</button>
+  <button onclick="prevImg()" class="absolute left-3 top-1/2 text-white text-3xl w-10 h-10 bg-white/20 rounded-full">‹</button>
+  <img id="galleryMain" src="" class="max-h-[75vh] max-w-[95vw] rounded-xl object-contain">
+  <div class="mt-4 flex gap-2 overflow-x-auto" id="galleryThumbs"></div>
+  <button onclick="nextImg()" class="absolute right-3 top-1/2 text-white text-3xl w-10 h-10 bg-white/20 rounded-full">›</button>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+const firebaseConfig = { apiKey: "AIzaSyDpR-ydEQWVCylOpJtOEbxrR9WnkuGErsk", authDomain: "royo-stayhub.firebaseapp.com", projectId: "royo-stayhub", storageBucket: "royo-stayhub.firebasestorage.app", messagingSenderId: "1028107929716", appId: "1:1028107929716:web:63286045ad3911f60de921" };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const IMGBB_KEY = "9942349a7ed68e7faa8a9e9044f7ef0d";
+const ALLOWED_ADMINS = ["admin@royostayhub.com", "atyam@royostayhub.com"];
+let curDist='all', curCat='all', curFor='all', currentBooking=null, selectedFiles=[], gImgs=[], gIndex=0;
+
+document.getElementById('pImage').addEventListener('change', e=>{
+ selectedFiles=[...e.target.files].slice(0,4);
+ const preview=document.getElementById('imgPreview');
+ preview.innerHTML=''; preview.classList.remove('hidden');
+ selectedFiles.forEach(f=>{ preview.innerHTML+=`<img src="${URL.createObjectURL(f)}" class="w-full h-24 object-cover rounded-xl border">`; });
+ document.getElementById('postStatus').innerText=`✅ ${selectedFiles.length} photos selected`;
+});
+async function uploadToImgBB(file){
+ const form=new FormData(); form.append("image", file);
+ const res=await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {method:"POST", body:form});
+ const data=await res.json(); if(data.success) return data.data.url; else throw new Error("Upload failed");
+}
+window.show = (id)=>{document.querySelectorAll('section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
+window.setDist = (btn)=>{curDist=btn.dataset.dist; document.querySelectorAll('.dist-btn').forEach(b=>b.className='dist-btn px-4 py-2 bg-white border rounded-full text-xs font-bold'); btn.className='dist-btn px-4 py-2 bg-black text-white rounded-full text-xs font-bold'; applyFilter();}
+window.setCat = (btn)=>{curCat=btn.dataset.cat; document.querySelectorAll('.cat-btn').forEach(b=>b.className='cat-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold'); btn.className='cat-btn px-4 py-1.5 bg-orange-600 text-white rounded-full text-xs font-bold'; applyFilter();}
+window.setFor = (btn)=>{curFor=btn.dataset.for; document.querySelectorAll('.for-btn').forEach(b=>b.className='for-btn px-4 py-1.5 bg-white border rounded-full text-xs font-bold'); btn.className='for-btn px-4 py-1.5 bg-black text-white rounded-full text-xs font-bold'; applyFilter();}
+window.applyFilter = ()=>{
+ const search=document.getElementById('searchInput').value.toLowerCase(); let count=0;
+ document.querySelectorAll('.stay-card').forEach(card=>{
+  const d=card.dataset.dist, c=card.dataset.cat, f=card.dataset.for, t=card.dataset.title;
+  if((curDist==='all'||d===curDist)&&(curCat==='all'||c===curCat)&&(curFor==='all'||f===curFor)&&(!search||t.includes(search))){card.style.display=''; count++;} else {card.style.display='none';}
+ }); document.getElementById('resultCount').innerText=count;
+}
+window.doSignup = ()=>{ const name=document.getElementById('uName').value, mobile=document.getElementById('uMobile').value, email=document.getElementById('uEmail').value; if(!name||!mobile||!email){alert("Bharo"); return;} localStorage.setItem('royo_user', JSON.stringify({name,mobile,email})); document.getElementById('authForm').classList.add('hidden'); document.getElementById('userInfo').classList.remove('hidden'); document.getElementById('displayName').innerText=name; document.getElementById('displayEmail').innerText=email; show('home');}
+window.logout = ()=>{localStorage.removeItem('royo_user'); location.reload();}
+
+// SECURE ADMIN LOGIN
+window.checkAdmin = async ()=>{
+  const email=document.getElementById('adminEmail').value.trim();
+  const pass=document.getElementById('adminPass').value;
+  const err=document.getElementById('adminError');
+  if(!ALLOWED_ADMINS.includes(email)){ err.innerText="❌ Ye email admin list me nahi hai"; err.classList.remove('hidden'); return; }
+  try{ await signInWithEmailAndPassword(auth, email, pass); err.classList.add('hidden'); }
+  catch(e){ err.innerText="❌ Wrong password - "+e.code; err.classList.remove('hidden'); }
+}
+onAuthStateChanged(auth, (user)=>{
+  if(user && ALLOWED_ADMINS.includes(user.email)){
+    localStorage.setItem('royo_admin', user.email);
+    document.getElementById('adminLoginBox').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    document.getElementById('adminEmailShow').innerText=user.email;
+  } else {
+    if(!localStorage.getItem('royo_admin')){ document.getElementById('adminLoginBox').classList.remove('hidden'); document.getElementById('adminPanel').classList.add('hidden'); }
+  }
+});
+window.logoutAdmin = async ()=>{ await signOut(auth); localStorage.removeItem('royo_admin'); location.reload(); }
+
+const saved=localStorage.getItem('royo_user'); if(saved){ const u=JSON.parse(saved); document.getElementById('authForm').classList.add('hidden'); document.getElementById('userInfo').classList.remove('hidden'); document.getElementById('displayName').innerText=u.name; document.getElementById('displayEmail').innerText=u.email; show('home'); } else { show('auth'); }
+
+window.openGallery = (imgs, idx)=>{
+  gImgs=imgs; gIndex=idx||0;
+  document.getElementById('galleryMain').src=gImgs[gIndex];
+  document.getElementById('galleryThumbs').innerHTML=gImgs.map((im,i)=>`<img onclick="openGallery(gImgs,${i})" src="${im}" class="w-14 h-14 rounded-lg object-cover border-2 ${i===gIndex?'border-white':'border-transparent'} cursor-pointer">`).join('');
+  document.getElementById('galleryModal').classList.remove('hidden');
+}
+window.closeGallery=()=>document.getElementById('galleryModal').classList.add('hidden');
+window.nextImg=()=>{ gIndex=(gIndex+1)%gImgs.length; openGallery(gImgs,gIndex); }
+window.prevImg=()=>{ gIndex=(gIndex-1+gImgs.length)%gImgs.length; openGallery(gImgs,gIndex); }
+
+onSnapshot(collection(db, "properties"), (snapshot)=>{
+ const grid=document.getElementById('stayGrid'); const adminGrid=document.getElementById('adminGrid');
+ grid.innerHTML=""; adminGrid.innerHTML="";
+ snapshot.forEach(docSnap=>{
+  const p=docSnap.data(); const id=docSnap.id;
+  const imgs = p.images && p.images.length? p.images : (p.image? [p.image] : []);
+  const firstImg = imgs[0] || 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=500';
+  const forIcon = p.suitableFor==='boy'?'👦 Boy':p.suitableFor==='girl'?'👧 Girl':p.suitableFor==='family'?'👨‍👩‍👧‍👦 Family':'👤 Other';
+  grid.innerHTML+=`<div class="stay-card bg-white rounded-[20px] overflow-hidden shadow w-full" data-dist="${p.district}" data-cat="${p.type}" data-for="${p.suitableFor||'other'}" data-title="${(p.title+' '+p.area+' '+p.district).toLowerCase()}">
+  <div class="relative w-full"><img id="main-${id}" onclick='openGallery(${JSON.stringify(imgs)},0)' src="${firstImg}" class="h-56 w-full object-cover block cursor-zoom-in"><span class="absolute top-3 left-3 bg-black text-white text-[11px] px-3 py-1 rounded-full font-bold">${forIcon}</span><span class="absolute top-3 right-3 bg-white/90 text-[10px] px-2 py-0.5 rounded-full font-bold">📸 ${imgs.length}</span></div>
+  <div class="p-4 w-full"><div class="flex justify-between items-start"><h4 class="font-bold text-sm w-[70%]">${p.title}</h4><span class="text-orange-600 font-black text-sm">₹${p.rent}<span class="text-[10px] text-gray-500 font-bold">/month</span></span></div>
+  <p class="text-xs text-gray-500 mt-1">${p.area}, ${p.city} • ${p.district} • ${p.type}</p>
+  <div class="flex gap-2 mt-3 overflow-x-auto w-full pb-1">${imgs.map((im,i)=>`<img onclick="document.getElementById('main-${id}').src='${im}'" src="${im}" class="thumb-${id} w-12 h-12 min-w-[48px] rounded-lg object-cover border cursor-pointer ${i===0?'border-orange-600 border-2':''}">`).join('')}</div>
+  <div class="flex flex-wrap gap-1 mt-2">${(p.features||[]).map(f=>`<span class="text-[10px] bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full">${f}</span>`).join('')}</div>
+  <p class="text-[10px] mt-2 text-blue-600 truncate">📍 ${p.location||p.area}</p>
+  <div class="grid grid-cols-2 gap-2 mt-3 w-full"><a href="tel:${p.phone}" class="text-center bg-black text-white rounded-full py-2.5 text-xs font-black">📞 Call</a><button onclick="openBook('${id}','${p.title}','${p.phone}')" class="bg-orange-600 text-white rounded-full py-2.5 text-xs font-black">Book Now</button></div>
+  </div></div>`;
+  adminGrid.innerHTML+=`<div class="bg-white rounded-[20px] overflow-hidden shadow"><img src="${firstImg}" class="h-24 w-full object-cover"><div class="p-3"><h4 class="font-bold text-sm">${p.title}</h4><p class="text-xs">₹${p.rent}/month • ${p.type}</p><button onclick="deleteProperty('${id}')" class="w-full mt-2 bg-red-600 text-white rounded-full py-2 text-xs font-black">DELETE</button></div></div>`;
+ }); applyFilter();
+});
+window.deleteProperty = async (id)=>{ if(!confirm('Delete?')) return; await deleteDoc(doc(db, "properties", id)); }
+window.postProperty = async ()=>{
+ const title=document.getElementById('pTitle').value, phone=document.getElementById('pPhone').value;
+ if(!title||!phone){alert("Bharo"); return;} if(selectedFiles.length===0){alert("1 photo"); return;}
+ const feats=[...document.querySelectorAll('.feat:checked')].map(c=>c.value);
+ const btn=document.getElementById('postBtn'); btn.innerText="Uploading..."; btn.disabled=true;
+ try{
+  let urls=[]; for(let i=0;i<selectedFiles.length;i++){ urls.push(await uploadToImgBB(selectedFiles[i])); }
+  await addDoc(collection(db, "properties"), { type: document.getElementById('pType').value, district: document.getElementById('pDist').value, suitableFor: document.getElementById('pFor').value, city: document.getElementById('pCity').value||document.getElementById('pDist').value, area: document.getElementById('pArea').value||"UP", rent: document.getElementById('pRent').value||"5000", phone, title, location: document.getElementById('pLocation').value, features: feats, images: urls, image: urls[0], createdAt: new Date() });
+  alert("Live ho gaya!"); show('home');
+ }catch(e){alert(e.message);} btn.innerText="🚀 Post Now"; btn.disabled=false;
+}
+window.openBook = (id,title,ownerPhone)=>{currentBooking={id,title,ownerPhone}; document.getElementById('bookTitle').innerText=title; document.getElementById('bookModal').classList.remove('hidden');}
+window.closeBook = ()=>document.getElementById('bookModal').classList.add('hidden');
+window.confirmBooking = async ()=>{
+ const name=document.getElementById('bookName').value, phone=document.getElementById('bookPhone').value;
+ if(!name||!phone){alert("Bharo"); return;}
+ await addDoc(collection(db, "bookings"), {propertyId: currentBooking.id, propertyTitle: currentBooking.title, ownerPhone: currentBooking.ownerPhone, customerName: name, customerPhone: phone, createdAt: new Date()});
+ alert("Booked!"); closeBook(); window.open(`https://wa.me/91${currentBooking.ownerPhone}?text=Hi, I want to book ${currentBooking.title}`, '_blank');
+}
+</script>
+</body>
+</html>
